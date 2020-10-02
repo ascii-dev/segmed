@@ -10,7 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+import dj_database_url
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+from dotenv import load_dotenv
+
+env_path = Path(".") / ".env"
+load_dotenv(dotenv_path=env_path)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +28,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'fjd*)t=ooo54*l65kfjblkg*glsn^(m%h_-jk(5+lo&z0i%6x^'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", 'true') == 'true'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
 
 
 # Application definition
@@ -79,12 +87,8 @@ WSGI_APPLICATION = 'segmed.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASES = {"default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)}
 
 
 # Password validation
