@@ -10,6 +10,7 @@ import {
   Badge,
 } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
+import axios from "axios";
 
 import './App.css';
 
@@ -18,9 +19,23 @@ const { Title } = Typography;
 const { Meta } = Card;
 
 class App extends Component {
-  componentDidMount() {
-
+  state = {
+    images: [],
   }
+
+  componentDidMount() {
+    this.loadImages();
+  }
+
+  loadImages = async () => {
+    const promise = await axios.get("http://localhost:8000/api/images/");
+    const status = promise.status;
+    if (status === 200) {
+      const data = promise.data;
+      this.setState({ images: data });
+    }
+  }
+
   composeCard = (url, description, user) => (
     <Card
       hoverable
@@ -44,7 +59,9 @@ class App extends Component {
       }
     </Badge.Ribbon>
   );
+
   render() {
+    const { images } = this.state;
     return (
       <div className="App">
         <Layout className="layout">
@@ -60,25 +77,36 @@ class App extends Component {
             </Breadcrumb>
             <div className="site-layout-content">
             <Divider orientation="left">Images</Divider>
-              <Row justify="center" align="top" gutter={16}>
-                <Col span={4}>
-                  {
-                    this.composeTagged(
-                      "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png",
-                      "image alt description",
-                      "Food Photographer David Fedulov",
-                    )
-                  }
-                </Col>
-                <Col span={4}>
-                  {
-                    this.composeCard(
-                      "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png",
-                      "image alt description",
-                      "Food Photographer David Fedulov",
-                    )
-                  }
-                </Col>
+              <Row gutter={[16, 24]}>
+                {
+                  images && images.length > 0
+                  ? (images.map(image =>
+                      (image.tagged)
+                      ? (
+                          <Col className="gutter-row" span={4} key={image.id}>
+                            {
+                              this.composeTagged(
+                                image.details.urls.raw,
+                                "image alt description",
+                                "Food Photographer David Fedulov",
+                              )
+                            }
+                          </Col>
+                        )
+                      : (
+                          <Col className="gutter-row" span={4} key={image.id}>
+                            {
+                              this.composeCard(
+                                image.details.urls.raw,
+                                "image alt description",
+                                "Food Photographer David Fedulov",
+                              )
+                            }
+                          </Col>
+                      )
+                  ))
+                  : ('No images in database')
+                }
               </Row>
             </div>
           </Content>
