@@ -8,6 +8,7 @@ import {
   Typography,
   Card,
   Badge,
+  message,
 } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import axios from "axios";
@@ -36,29 +37,46 @@ class App extends Component {
     }
   }
 
-  composeCard = (url, description, user) => (
+  composeCard = (url, description, user, tagged, id) => (
     <Card
       hoverable
       cover={<img alt={description} src={url} />}
-      actions={[
-        <EditOutlined key="tag" />,
-      ]}
+      actions={
+        !tagged
+          ? [
+              <EditOutlined
+                key="tag"
+                onClick={() => this.handleTag(id)}
+              />
+            ]
+          : []}
     >
       <Meta title={description} description={`Uploaded by ${user}`} />
     </Card>
   );
 
-  composeTagged = (url, description, user) => (
+  composeTagged = (url, description, user, tagged, id) => (
     <Badge.Ribbon text="Tagged">
       {
         this.composeCard(
           url,
           description,
           user,
+          tagged,
+          id,
         )
       }
     </Badge.Ribbon>
   );
+
+  handleTag = async (imageId) => {
+    const promise = await axios.patch(`http://localhost:8000/api/images/${imageId}/tag/`);
+    const status = promise.status;
+    if (status === 200) {
+      this.loadImages();
+      message.success("Image tagged successfully");
+    }
+  }
 
   render() {
     const { images } = this.state;
@@ -89,6 +107,8 @@ class App extends Component {
                                 image.details.urls.raw,
                                 image.details.alt_description,
                                 image.details.user.username,
+                                image.tagged,
+                                image.id,
                               )
                             }
                           </Col>
@@ -100,6 +120,8 @@ class App extends Component {
                                 image.details.urls.raw,
                                 image.details.alt_description,
                                 image.details.user.username,
+                                image.tagged,
+                                image.id,
                               )
                             }
                           </Col>

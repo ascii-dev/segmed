@@ -11,7 +11,7 @@ class ImageView(viewsets.ReadOnlyModelViewSet):
     queryset = Image.objects.all()
 
     @action(detail=True, methods=['patch'], name='Tag image')
-    def tag_image(self, request, pk=None):
+    def tag(self, request, pk=None):
         """Tag an image"""
         image = self.get_object()
         image.tagged = True
