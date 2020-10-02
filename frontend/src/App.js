@@ -87,8 +87,8 @@ class App extends Component {
                             {
                               this.composeTagged(
                                 image.details.urls.raw,
-                                "image alt description",
-                                "Food Photographer David Fedulov",
+                                image.details.alt_description,
+                                image.details.user.username,
                               )
                             }
                           </Col>
@@ -98,8 +98,8 @@ class App extends Component {
                             {
                               this.composeCard(
                                 image.details.urls.raw,
-                                "image alt description",
-                                "Food Photographer David Fedulov",
+                                image.details.alt_description,
+                                image.details.user.username,
                               )
                             }
                           </Col>
