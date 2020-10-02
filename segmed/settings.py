@@ -47,10 +47,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Third Party
-    'corsheader',
+    'corsheaders',
     'rest_framework',
 
     # Local
+    'image',
 ]
 
 MIDDLEWARE = [
@@ -128,3 +129,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+UNSPLASH_ACCESS_KEY = os.getenv('UNSPLASH_ACCESS_KEY')
