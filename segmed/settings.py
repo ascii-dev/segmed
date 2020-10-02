@@ -131,3 +131,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 UNSPLASH_ACCESS_KEY = os.getenv('UNSPLASH_ACCESS_KEY')
+CORS_ORIGIN_WHITELIST = os.getenv("CORS_ORIGIN_WHITELIST", "http://localhost:3000").split(",")
